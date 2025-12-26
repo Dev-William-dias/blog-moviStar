@@ -4,7 +4,7 @@
 
     $userDao = new UserDao($conn, $BASE_URL);
 
-    $userData = $userDao->verifyToken();
+    $userData = $userDao->verifyToken(true);
 ?>
     <div id="main-container" class="container-fluid">
         <h1>Edição de perfil</h1>

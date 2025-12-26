@@ -14,7 +14,15 @@
 
     if($type === "login") {
 
-        
+        $email = filter_input(INPUT_POST, "email");
+        $password = filter_input(INPUT_POST, "password");
+
+        if($userDao->authenticateUser($email, $password)) {
+            $message->setMessage("Seja bem-vindo!", "success", "editprofile.php");
+        } else {
+            $message->setMessage("E-mail ou senha incorretos.", "error", "back");
+        }
+
     } else if ($type === "register") {
         $name = filter_input(INPUT_POST, "name");
         $lastname = filter_input(INPUT_POST, "lastname");
@@ -52,4 +60,6 @@
         } else {
             $message->setMessage("Por favor, preencha todos os campos.", "error", "back");
         }
+    } else {
+        $message->setMessage("Informações invalidas.", "error", "back");
     }

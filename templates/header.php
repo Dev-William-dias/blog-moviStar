@@ -13,9 +13,8 @@
     }
 
     $userDao = new UserDao($conn, $BASE_URL);
-
-    $userData = $userDao->verifyToken(true);
-
+                          
+    $userData = $userDao->verifyToken(false);
 ?>
 
 <!DOCTYPE html>
