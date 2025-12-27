@@ -1,0 +1,8 @@
+# Ignorar arquivos
+img/users/*
+img/movies/*
+logs/
+
+#Reverte a regra para arquivos especificos
+img/users/user.png
+img/movies/movie_cover.jpg

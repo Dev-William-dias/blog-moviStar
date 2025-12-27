@@ -200,7 +200,20 @@ class UserDao implements UserDaoInterface {
     }
 
     public function changePassword(User $user) {
+        try {
+            $stmt = $this->conn->prepare("UPDATE users SET password = :password WHERE id = :id");
 
+            $stmt->bindParam(":password", $user->password);
+            $stmt->bindParam(":id", $user->id);
+
+            $stmt->execute();
+               
+            $this->message->setMessage("Senha atualizada com sucesso","success","back");
+
+        } catch (PDOException $e) {
+            Globals::logError("UserDao update: ".$e->getMessage());
+            $this->message->setMessage("Erro ao atualizar senha.","error","back");
+        }
     }
 
 }
