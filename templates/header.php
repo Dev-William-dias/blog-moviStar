@@ -38,7 +38,9 @@
                 <img src="img/logo.svg" alt="MovieStar" id="logo">
                 <span id="moviestar-title">MovieStar</span>
             </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
             <form action="" method="GET" id="search-form" class="d-flex align-items-center my-2 my-lg-0">   
                 <input type="search" name="q" id="search" class="form-control me-2" placeholder="Buscar Filmes" aria-label="Search">
                 <button class="btn btn-outline-secondary" type="submit">

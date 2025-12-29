@@ -53,9 +53,12 @@
         $userDao->update($userData);
 
     } else if ($type === "changepassword") {
-        $id = filter_input(INPUT_POST, "id");
+
         $password = filter_input(INPUT_POST, "password");
         $confirpassword = filter_input(INPUT_POST, "confirmepassword");
+
+        $userData = $userDao->verifyToken();
+        $id = $userData->id;
 
         if ($password == $confirpassword) {
 

@@ -56,7 +56,6 @@
                     <p class="page-description">Digite a nova senha e confirme, para alterar a senha:</p>
                     <form action="user_process.php" method="post">
                         <input type="hidden" name="type" value="changepassword">
-                        <input type="hidden" name="id" value="<?= $userData->id?>">
                         <div class="mb-3">
                             <label for="password">Nova senha:</label>
                             <input type="password" class="form-control" id="password" name="password" placeholder="Digite sua nova senha">
