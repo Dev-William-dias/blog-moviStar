@@ -26,7 +26,7 @@ class MovieDao implements MovieDaoInterface {
         $movie->trailer = $data["trailer"];
         $movie->category = $data["category"];
         $movie->length = $data["length"];
-        $movie->usersId = $data["users_id"];
+        $movie->users_id = $data["users_id"];
 
         return $movie;
     }
@@ -86,11 +86,52 @@ class MovieDao implements MovieDaoInterface {
     }
 
     public function getMoviesByUserId($id) {
+        try {
+            $movies = [];
 
+            $stmt = $this->conn->prepare("SELECT * FROM movies WHERE users_id = :users_id");
+
+            $stmt->bindParam(":users_id", $id);
+
+            $stmt->execute();
+
+            if ($stmt->rowCount() > 0) {
+
+                $moviesArray = $stmt->fetchAll();
+
+                foreach($moviesArray as $movie) {
+                    $movies[] = $this->buildMovie($movie);
+                }
+            }
+
+            return $movies;
+        } catch (PDOException $e) {
+            Globals::logError("MovieDao getLatestMovies: ".$e->getMessage());
+            return [];
+        }
     }
 
     public function findById($id) {
+        try {
+            $stmt = $this->conn->prepare("SELECT * FROM movies WHERE id = :id");
 
+            $stmt->bindParam(":id", $id);
+
+            $stmt->execute();
+
+            if ($stmt->rowCount() > 0) {
+                $movieData = $stmt->fetch();
+
+                $movie = $this->buildMovie($movieData);
+
+                return $movie;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            Globals::logError("MovieDao getLatestMovies: ".$e->getMessage());
+            return false;
+        }
     }
 
     public function findByTitle($title) {
@@ -107,7 +148,7 @@ class MovieDao implements MovieDaoInterface {
             $stmt->bindParam(":trailer", $movie->trailer);
             $stmt->bindParam(":category", $movie->category);
             $stmt->bindParam(":length", $movie->length);
-            $stmt->bindParam(":users_id", $movie->userId);
+            $stmt->bindParam(":users_id", $movie->users_id);
             
             $stmt->execute();
 
@@ -120,11 +161,41 @@ class MovieDao implements MovieDaoInterface {
     }
 
     public function update(Movie $movie) {
+        try {
+            $stmt = $this->conn->prepare("UPDATE movies SET title = :title, description = :description, image = :image, trailer = :trailer, category = :category, length = :length WHERE id = :id");
+    
+            $stmt->bindParam(":title", $movie->title);
+            $stmt->bindParam(":description", $movie->description);
+            $stmt->bindParam(":image", $movie->image);
+            $stmt->bindParam(":trailer", $movie->trailer);
+            $stmt->bindParam(":category", $movie->category);
+            $stmt->bindParam(":length", $movie->length);
+            $stmt->bindParam(":id", $movie->id);
 
+            $stmt->execute();
+
+            $this->message->setMessage("Filme atualizado com sucesso","success","back");
+
+        } catch (PDOException $e) {
+            Globals::logError("MovieDao update: ".$e->getMessage());
+            $this->message->setMessage("Erro ao atualizar filme.","error","back");     
+        }
     }
 
     public function destroy($id) {
+        try {
+            $stmt = $this->conn->prepare("DELETE FROM movies WHERE id = :id");
 
+            $stmt->bindParam(":id", $id);
+
+            $stmt->execute();
+
+            $this->message->setMessage("Filme removido com sucesso.","success","back");     
+
+        } catch (PDOException $e) {
+            Globals::logError("MovieDao getLatestMovies: ".$e->getMessage());
+            return false;
+        }
     }
 
 }
