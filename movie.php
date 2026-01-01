@@ -1,6 +1,9 @@
 <?php
     require_once("templates/header.php");
+
+    require_once("models/Movie.php");
     require_once("dao/MovieDao.php");
+    require_once("dao/ReviewDao.php");
     require_once("models/Message.php");
 
     $id = filter_input(INPUT_GET, "id");
@@ -9,6 +12,7 @@
 
     $message = new Message($BASE_URL);
     $movieDao = new MovieDao($conn, $BASE_URL);
+    $reviewDao = new ReviewDao($conn, $BASE_URL);
 
     if (empty($id)) {
         $message->setMessage("O filme não foi encotrado!", "error", "index.php");
@@ -25,13 +29,16 @@
     }
 
     $userOwnsMovie = false;
-    $alreadyReviewed = false;
-
+    
     if (!empty($userData)) {
         if ($userData->id === $movie->users_id) {
             $userOwnsMovie = true;
         }
+
+        $alreadyReviewed = $reviewDao->hasAlreadyReviewed($id, $userData->id);
     }
+
+    $movieReviews = $reviewDao->getMoviesReview($movie->id);
 ?>
     <div id="main-container" class="container-fluid">
         <div class="row">
@@ -42,7 +49,7 @@
                     <span class="pipe"></span>
                     <span><?= $movie->category ?></span>
                     <span class="pipe"></span>
-                    <span><i class="fas fa-star"></i>9</span>
+                    <span><i class="fas fa-star"></i><?= $movie->rating ?></span>
                 </p>
                 <iframe width="560" height="315" src="<?= $movie->trailer ?>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 <p><?= $movie->description ?></p>
@@ -83,21 +90,12 @@
                         </form>
                     </div>
                 <?php endif; ?>
-                <div class="col-md-12 review">
-                    <div class="row">
-                        <div class="col-md-1">
-                            <div class="palreadyReviewedrofile-image-container review-image" style="background-image: url('img/users/user.png')"></div>
-                        </div>
-                        <div class="col-md-9 author-details-container">
-                            <h4 class="author-name"><a href="#">Teste</a></h4>
-                            <p><i class="fas fa-star"></i>9</p>
-                            <div class="col-md-12">
-                                <p class="comment-title">Comentário:</p>
-                                <p>Teste</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <?php foreach($movieReviews as $review): ?>
+                    <?php require("templates/user_review.php"); ?>
+                <?php endforeach; ?>
+                <?php if(count($movieReviews) == 0): ?>
+                    <p class="empty-list">Não há comentários para este filme ainda...</p>
+                <?php endif; ?>
             </div>
         </div>
     </div>

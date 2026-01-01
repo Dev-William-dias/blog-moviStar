@@ -165,7 +165,27 @@ class UserDao implements UserDaoInterface {
 
 
     public function findById($id) {
+        try {
+            if ($id == "") {
+                return false;
+            }
 
+            $stmt = $this->conn->prepare("SELECT * FROM users WHERE id = :id");
+
+            $stmt->bindParam(":id", $id);
+            $stmt->execute();
+
+            $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($data) {
+                return $this->buildUser($data);
+            }
+
+            return false;
+        } catch (PDOException $e) {
+            Globals::logError("UserDao findByEmail: ".$e->getMessage());
+            return false;
+        }
     }
 
     public function findByToken($token) {
